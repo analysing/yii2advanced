@@ -22,4 +22,13 @@ class User extends \common\models\User
             [['password'], 'string', 'min' => 6],
         ];
     }
+    
+    public function fields()
+    {
+        return [
+            'id',
+            'username',
+            'email',
+        ];
+    }
 }
