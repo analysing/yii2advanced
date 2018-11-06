@@ -26,6 +26,11 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
 
+<<<<<<< HEAD
+=======
+    public $password;
+
+>>>>>>> 73e31a1a5c94d16faf0aaecd22fff14505988330
 
     /**
      * {@inheritdoc}
@@ -53,6 +58,23 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+<<<<<<< HEAD
+=======
+
+            ['username', 'trim'],
+            ['username', 'required'],
+            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
+            ['username', 'string', 'min' => 2, 'max' => 255],
+
+            ['email', 'trim'],
+            ['email', 'required'],
+            ['email', 'email'],
+            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email has already been taken.'],
+            ['email', 'string', 'max' => 255],
+
+            ['password', 'required'],
+            ['password', 'string', 'min' => 6],
+>>>>>>> 73e31a1a5c94d16faf0aaecd22fff14505988330
         ];
     }
 
@@ -186,6 +208,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->password_reset_token = null;
     }
+<<<<<<< HEAD
 
     public function fields()
     {
@@ -195,4 +218,6 @@ class User extends ActiveRecord implements IdentityInterface
             'email',
         ];
     }
+=======
+>>>>>>> 73e31a1a5c94d16faf0aaecd22fff14505988330
 }

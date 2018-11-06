@@ -8,7 +8,7 @@ rem -------------------------------------------------------------
 
 set YII_PATH=%~dp0
 
-if "%PHP_COMMAND%" == "" set PHP_COMMAND=D:\\phpStudy\\PHPTutorial\\php\\php-5.6.27-nts\\php.exe
+if "%PHP_COMMAND%" == "" set PHP_COMMAND=php.exe
 
 "%PHP_COMMAND%" "%YII_PATH%init" %*
 

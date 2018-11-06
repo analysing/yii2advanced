@@ -5,13 +5,18 @@ namespace api\controllers;
 use yii\rest\ActiveController;
 use api\models\User;
 
-class UserController extends ActiveController
+/**
+ * User
+ */
+class UserController extends \yii\rest\ActiveController
 {
     public $modelClass = 'api\models\User';
     
     public function actions()
     {
-        $actions = parent::actions(); // index view create update delete options
+        // GET查 POST增 PUT改 PATCH改 DELETE删 OPTIONS列出可用的方法 HEAD
+        // return parent::actions();
+        $actions = parent::actions();
         unset($actions['create'], $actions['update']);
         return $actions;
     }

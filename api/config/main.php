@@ -23,12 +23,14 @@ return [
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-api', 'httpOnly' => true],
+            'enableSession' => false,
+            'loginUrl' => null,
+            // 'identityCookie' => ['name' => '_identity-api', 'httpOnly' => true],
         ],
-        'session' => [
+        /*'session' => [
             // this is the name of the session cookie used for login on the api
             'name' => 'advanced-api',
-        ],
+        ],*/
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
