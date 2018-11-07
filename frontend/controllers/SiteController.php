@@ -26,10 +26,10 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'signup'],
+                'only' => ['logout', 'signup', 'redis-test'],
                 'rules' => [
                     [
-                        'actions' => ['signup'],
+                        'actions' => ['signup', 'redis-test'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -211,5 +211,14 @@ class SiteController extends Controller
         return $this->render('resetPassword', [
             'model' => $model,
         ]);
+    }
+
+    public function actionRedisTest()
+    {
+        // String
+        $redis = Yii::$app->redis;
+        echo $redis->get('name');
+        // Hash、List、Set、SortedSet、HyperLogLog、GEO、Pub/Sub、Transaction、Script、Connection、Server
+        
     }
 }
