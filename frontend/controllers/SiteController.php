@@ -219,6 +219,14 @@ class SiteController extends Controller
         $redis = Yii::$app->redis;
         echo $redis->get('name');
         // Hash、List、Set、SortedSet、HyperLogLog、GEO、Pub/Sub、Transaction、Script、Connection、Server
-        
+        $redis->zadd('names', 0, 'bill'); // 增
+        $redis->zadd('names', 4, 'bill'); // 改
+        $redis->zadd('names', 1, 'ivy', 2, 'admin', 3, json_encode(['sa', 'root'])); // 增
+        $redis->zrem('names', 'bill66'); // 删
+        $redis->zrem('names', 'admin', json_encode(['sa', 'root']), 'ii'); // 删，多个
+        echo '<pre>';
+        // var_dump($redis->zrange('names', 0, 2, 'withscores')); // WITHSCORES
+        var_dump($redis->zrange('names', 0, -1, 'withscores')); // 查
+        echo '</pre>';
     }
 }
