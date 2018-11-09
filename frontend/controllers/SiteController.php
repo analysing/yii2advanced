@@ -225,11 +225,15 @@ class SiteController extends Controller
         $redis->zadd('names', 4, 'bill'); // 改
         $redis->zadd('names', 1, 'ivy', 2, 'admin', 3, json_encode(['sa', 'root'])); // 增
         $redis->zrem('names', 'bill66'); // 删
-        $redis->zrem('names', 'admin', json_encode(['sa', 'root']), 'ii'); // 删，多个
+        $redis->zrem('names', 'admin', json_encode(['sa', 'root']), 'ii'); // 删，多个*/
         echo '<pre>';
         // var_dump($redis->zrange('names', 0, 2, 'withscores')); // WITHSCORES
-        var_dump($redis->zrange('names', 0, -1, 'withscores')); // 查
-        echo '</pre>';*/
+        // var_dump($redis->zrange('names', 0, -1, 'withscores')); // 查
+        // var_dump($redis->zcard('names')); // 成员数
+        var_dump($redis->zscore('names', 'ivy')); // 根据成员名获取分数
+        // var_dump($redis->zrevrank('names', 'ivy'));
+        // var_dump($redis->zcount('names', 0, 100));
+        echo '</pre>';
 
         // Set
         /*$redis->sadd('addr', 'guangzhou', 'manila');
