@@ -51,6 +51,18 @@ return [
             'rules' => [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'member'],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'lottery',
+                    'except' => ['delete', 'update', 'create', 'view'],
+                    // 'pluralize' => false, // 路由不使用复数形式
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'bjpc28',
+                    'except' => ['delete', 'update', 'create', 'view'],
+                    // 'pluralize' => false,
+                ],
             ],
         ],
         
