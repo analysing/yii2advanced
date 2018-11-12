@@ -21,9 +21,9 @@ class ResultPC extends \yii\db\ActiveRecord
     // 获取数据
     public function getItems()
     {
-        $query = static::find();
+        $query = static::find()->orderBy('nu_id desc')->limit(Yii::$app->params['pageSize'])->all();
 
-        $dataProvider = new ActiveDataProvider([
+        /*$dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
                 'pageSize' => Yii::$app->params['pageSize'], // 默认取20条
@@ -33,12 +33,13 @@ class ResultPC extends \yii\db\ActiveRecord
                     'nu_id' => SORT_DESC,
                 ],
             ],
-        ]);
+        ]);*/
 
         // 打印sql
         // echo $query->createCommand()->getRawSql();
         // echo $query->createCommand()->sql;
-        return $dataProvider;
+        // return $dataProvider;
+        return $query;
     }
 
     /**
@@ -57,7 +58,6 @@ class ResultPC extends \yii\db\ActiveRecord
     {
         $redis = Yii::$app->redis;
         $data = $redis->hvals($this->redisKey);
-        file_put_contents('d:/1.txt', 'ivy:'. var_export($data, 1));
         $res = [];
         foreach ($data as $k => $v) {
             $info = json_decode($v, true);
@@ -107,12 +107,10 @@ class ResultPC extends \yii\db\ActiveRecord
         if (!$data || !is_array($data)) {
             return false;
         }
-        file_put_contents('d:/1.txt', 'qqq');
         $redis = Yii::$app->redis;
         $data = array_reverse($data); // 翻转数据
-        file_put_contents('d:/1.txt', 'www');
+        file_put_contents('d:/1.txt', 'www:'. var_export($data, 1));
         $issues = $this->getRedisIssues();
-        file_put_contents('d:/1.txt', var_export($issues, 1));
         foreach ($data as $k => $v) {
             if (!in_array($v[$this->_issueCol], $issues)) {
                 $redis->hset($this->redisKey, $v[$this->_issueCol], json_encode($v));
