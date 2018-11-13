@@ -64,6 +64,7 @@ return [
                     // 'pluralize' => false,
                     'extraPatterns' => [
                         'GET latest' => 'latest',
+                        'GET analysis' => 'analysis',
                     ],
                 ],
             ],
