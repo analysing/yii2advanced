@@ -11,6 +11,7 @@ use yii\data\ActiveDataProvider;
 class ResultPC extends \yii\db\ActiveRecord
 {
     public $redisKey = 'bj_pc28';
+    public $redisLatestKey = 'bj_pc28_latest';
     private $_issueCol = 'nu_id';
 
     public static function tableName()
@@ -19,9 +20,10 @@ class ResultPC extends \yii\db\ActiveRecord
     }
 
     // 获取数据
-    public function getItems()
+    public function getItems($limit = 0)
     {
-        $query = static::find()->orderBy('nu_id desc')->limit(Yii::$app->params['pageSize'])->all();
+        $limit == 0 && $limit = Yii::$app->params['pageSize'];
+        $query = static::find()->orderBy('nu_id desc')->limit($limit)->asArray()->all();
 
         /*$dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -108,8 +110,7 @@ class ResultPC extends \yii\db\ActiveRecord
             return false;
         }
         $redis = Yii::$app->redis;
-        $data = array_reverse($data); // 翻转数据
-        file_put_contents('d:/1.txt', 'www:'. var_export($data, 1));
+        // $data = array_reverse($data); // 翻转数据
         $issues = $this->getRedisIssues();
         foreach ($data as $k => $v) {
             if (!in_array($v[$this->_issueCol], $issues)) {
@@ -126,6 +127,17 @@ class ResultPC extends \yii\db\ActiveRecord
     public function getRedisIssues()
     {
         $data = Yii::$app->redis->hkeys($this->redisKey);
+        return $data;
+    }
+
+    public function addLatestToRedis($issue)
+    {
+        return Yii::$app->redis->hset($this->redisLatestKey, $issue, 0);
+    }
+
+    public function getRedisLatest()
+    {
+        $data = Yii::$app->redis->hkeys($this->redisLatestKey);
         return $data;
     }
 }

@@ -25,8 +25,33 @@ class Bjpc28Controller extends ActiveController
         $data = $model->getItemsViaRedis();
         if (!$data) {
             $data = $model->getItems();
-            $model->addItemsToRedis($data); // 转换为数组
+            $model->addItemsToRedis($data);
         }
         return $data;
+    }
+
+    public function actionLatest()
+    {
+        $model = new ResultPC();
+        $issues = $model->getRedisIssues();
+        $latest = $model->getRedisLatest();
+        $diff = array_diff($issues, $latest);
+        if (count($diff) >= 1) {
+            $latest = end($diff);
+            sort($issues);
+            if ($latest > end($issues)) {
+                $info = $model->getItemByIssueViaRedis($latest);
+                $model->addLatestToRedis($latest);
+                return $info;
+            }
+        }
+        return [];
+    }
+
+    public function actionAnalysis()
+    {
+        $model = new ResultPC();
+        $data = $model->getItems(200);
+        
     }
 }

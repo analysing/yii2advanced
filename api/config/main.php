@@ -62,6 +62,9 @@ return [
                     'controller' => 'bjpc28',
                     'except' => ['delete', 'update', 'create', 'view'],
                     // 'pluralize' => false,
+                    'extraPatterns' => [
+                        'GET latest' => 'latest',
+                    ],
                 ],
             ],
         ],
