@@ -85,4 +85,110 @@ class CustomHelper
         }
         return $class;
     }
+
+    public static function getCountdown($table, $lt) {
+        //$lt = isset($one['addtime']) ? $one['addtime'] : $one['add_time'];
+        $nt = time();
+        $ddd = date("H:i:s");
+        switch ($table) {
+            case 'result_gd_10':
+                $st = 590 + $lt - $nt;
+                if ($st < 0) {
+                    $st = 590;
+                }
+                if ($ddd < '09:10:20') {
+                    $st = strtotime(date("Y-m-d") . ' 09:10:00') - time();
+                }
+                if ($ddd > '23:00:20') {
+                    $st = strtotime(date("Y-m-d", strtotime("+1 day")) . ' 09:10:00') - time();
+                }
+                break;
+            case 'result_cq_10':
+                $st = 590 + $lt - $nt;
+                if ($st < 0) {
+                    $st = 590;
+                }
+                if ($ddd > '22:00:00' || $ddd < '10:00:00') {
+                    $st = 290 + $lt - $nt;
+                    if ($st < 0) {
+                        $st = 290;
+                    }
+                }
+                if ($ddd > '01:55:20' && $ddd < '10:00:0') {
+                    $st = strtotime(date("Y-m-d") . ' 10:00:00') - time();
+                }
+                break;
+            case 'result_gx_10':
+                break;
+            case 'result_pk_10':
+                $st = 290 + $lt - $nt;
+                if ($st < 0) {
+                    $st = 290;
+                }
+                if ($ddd < '09:06:00') {
+                    $st = strtotime(date("Y-m-d") . ' 09:06:00') - time();
+                }
+                if ($ddd > '23:56:00') {
+                    $st = strtotime(date("Y-m-d", strtotime("+1 day")) . ' 09:06:00') - time();
+                }
+                break;
+            case 'result_nc_10':
+                $st = 590 + $lt - $nt;
+                if ($st < 0) {
+                    $st = 590;
+                }
+                if ($ddd > '02:04:50' && $ddd < '10:00:00') {
+                    $st = strtotime(date("Y-m-d") . ' 10:00:00') - time();
+                }
+                break;
+            case 'result_xj_10':
+                $st = 590 + $lt - $nt;
+                if ($st < 0) {
+                    $st = 590;
+                }
+                if ($ddd > '02:00:50' && $ddd < '10:10:00') {
+                    $st = strtotime(date("Y-m-d") . ' 10:10:00') - time();
+                }
+                break;
+            case 'result_pc':
+                $st = 290 - $nt + $lt;
+                $st = $st > 290 ? 290 : $st;
+                if ($ddd < '09:05:00') {
+                    $st = strtotime(date("Y-m-d") . ' 09:05:00') - time();
+                }
+                if ($ddd >= '23:56:00') {
+                    $st = strtotime(date("Y-m-d", strtotime("+1 day")) . ' 09:05:00') - time();
+                }
+                break;
+            case 'result_jnd':
+                $st = 200 - $nt + $lt;
+                $st = $st > 200 ? 200 : $st;
+                $st = $st < 0 ? 0 : $st;
+                break;
+            case 'result_six_10':
+                if ($ddd > '21:30:00' || $ddd < '20:59:00') {
+                    $st = 999999999;
+                } else {
+                    $lt = strtotime(date("Y-m-d") . ' 21:00:00');
+                    $st = $lt - $nt;
+                }
+                if ($st < 0) {
+                    $st = 0;
+                }
+                break;
+            case 're11_six':
+                if ($ddd > '21:35:00' || $ddd < '20:59:00') {
+                    $st = 999999999;
+                } else {
+                    $st = $lt - $nt;
+                }
+                if ($st < 0) {
+                    $st = 0;
+                }
+                break;
+            default:
+                break;
+        }
+        return $st;
+    }
 }

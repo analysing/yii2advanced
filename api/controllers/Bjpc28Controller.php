@@ -12,6 +12,10 @@ use api\components\helpers\CustomHelper;
 class Bjpc28Controller extends ActiveController
 {
     public $modelClass = 'api\models\ResultPC';
+    /*public $serializer = [
+        'class' => 'yii\rest\Serializer',
+        'collectionEnvelope' => 'items',
+    ];*/
 
     public function actions()
     {
@@ -31,22 +35,43 @@ class Bjpc28Controller extends ActiveController
         return $data;
     }
 
-    public function actionLatest()
+    public function actionLatestAndCountdown()
     {
         $model = new ResultPC();
         $issues = $model->getRedisIssues();
         $latest = $model->getRedisLatest();
         $diff = array_diff($issues, $latest);
         if (count($diff) >= 1) {
+            sort($diff);
             $latest = end($diff);
             sort($issues);
             if ($latest > end($issues)) {
                 $info = $model->getItemByIssueViaRedis($latest);
+                $cd = CustomHelper::getCountdown($model->tableSchema->name, $info['add_time']); // $model->tableSchema->name 获取表名
                 $model->addLatestToRedis($latest);
-                return $info;
+                return ['info' => $info, 'cd' => $cd];
             }
         }
-        return [];
+        return ['info' => [], 'cd' => 0];
+    }
+
+    public function actionLatest()
+    {
+        $model = new ResultPC();
+        $latest = $model->getRedisLatest();
+        sort($latest);
+        $info = $model->getItemByIssueViaRedis(end($latest));
+        return $info;
+    }
+
+    // 获取倒计时
+    public function actionCountdown()
+    {
+        $model = new ResultPC();
+        $latest = $model->getRedisLatest();
+        sort($latest);
+        $cd = CustomHelper::getCountdown($model->tableSchema->name, end($latest));
+        return $cd;
     }
 
     // 未开 1000
@@ -99,5 +124,45 @@ class Bjpc28Controller extends ActiveController
         }
 
         return $res;
+    }
+
+    public function actionStatistics()
+    {
+        $model = new ResultPC();
+        $data = $model->getItemsViaRedis();
+        if (!$data) {
+            $data = $model->getItems();
+            $model->addItemsToRedis($data);
+        }
+        $data_handle = [];
+        foreach ($data as $k => $v) {
+            $data_handle[$k] = [
+                'nu_id' => $v['nu_id'],
+                'number_sum' => $v['number_sum'],
+                'sum_big' => $v['sum_big'] == '大' ? '大' : '',
+                'sum_small' => $v['sum_big'] == '小' ? '小' : '',
+                'sum_even' => $v['sum_even'] == '单' ? '单' : '',
+                'sum_odd' => $v['sum_even'] == '双' ? '双' : '',
+                'sum_big_even' => $v['sum_big'] . $v['sum_even'] == '大单' ? '大单' : '',
+                'sum_big_odd' => $v['sum_big'] . $v['sum_even'] == '大双' ? '大双' : '',
+                'sum_small_even' => $v['sum_big'] . $v['sum_even'] == '小单' ? '小单' : '',
+                'sum_small_odd' => $v['sum_big'] . $v['sum_even'] == '小双' ? '小双' : '',
+            ];
+            if ($k > \Yii::$app->params['pageSize']) break;
+        }
+
+        return $data_handle;
+    }
+
+    // 露珠走势
+    public function actionDewdrop()
+    {
+
+    }
+
+    // 行情走势
+    public function actionMarketTrend()
+    {
+
     }
 }

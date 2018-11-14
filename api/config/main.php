@@ -63,7 +63,9 @@ return [
                     'except' => ['delete', 'update', 'create', 'view'],
                     // 'pluralize' => false,
                     'extraPatterns' => [
+                        'GET latest-and-countdown' => 'latest-and-countdown',
                         'GET latest' => 'latest',
+                        'GET countdown' => 'countdown',
                         'GET analysis/<limit>' => 'analysis',
                     ],
                 ],
