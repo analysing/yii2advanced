@@ -4,6 +4,7 @@ namespace console\controllers;
 
 use yii\db\Query;
 use yii\console\ExitCode;
+use yii\helpers\Console;
 
 /**
  * test
@@ -66,7 +67,9 @@ class IndexController extends \yii\console\Controller
      */
     public function actionTest2()
     {
-        $rows = (new Query())->from('result_pc')->orderBy('nu_id desc')->limit(15)->all();
+        $rows = (new Query())->from('result_pc')->orderBy('nu_id desc')->limit(2)->all();
+        $this->stdout("Hello\r\n", Console::BOLD);
+        echo $this->ansiFormat('bill', Console::FG_YELLOW);
         print_r($rows);
         return ExitCode::OK;
     }
