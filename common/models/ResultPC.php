@@ -1,13 +1,14 @@
 <?php
 
-namespace common/models;
+namespace common\models;
 
 /**
  * 北京PC28
  */
 class ResultPC extends \yii\db\ActiveRecord
 {
-    public static $idKey = 'nu_id';
+    const ID = 'nu_id';
+    const BJPC28 = 1; // lottery_id
 
     public static function tableName()
     {

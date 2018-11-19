@@ -2,8 +2,11 @@
 
 namespace lotto28\console\controllers;
 
+use Yii;
+use yii\console\ExitCode;
 use common\models\NotOpen;
 use common\models\ResultPC;
+use common\components\helpers\CustomHelper;
 
 /**
 * 初始化数据
@@ -21,53 +24,50 @@ class InitController extends \yii\console\Controller
     {
         return ['l' => 'lottery'];
     }
+
+    public function actionSetCache($num = 15)
+    {
+        if (!is_numeric($num) || $num < 0 || $num > 1000) {
+            $num = 50;
+        }
+        $redis = Yii::$app->redis;
+        if ($this->lottery == ResultPC::BJPC28) {
+            $redis->del('res'. ResultPC::BJPC28); // 删除原来的数据
+            $data = ResultPC::find()->orderBy(ResultPC::ID .' desc')->limit($num)->asArray()->all();
+            foreach ($data as $k => $v) {
+                $redis->zadd('res'. ResultPC::BJPC28, $v[ResultPC::ID], json_encode($v));
+            }
+        } else {
+            echo '找不到相关彩种';
+            return ExitCode::UNSPECIFIED_ERROR;
+        }
+        return ExitCode::OK;
+    }
     
     public function actionNotOpen($num = 50)
     {
+        if (!is_numeric($num) || $num < 0 || $num > 1000) {
+            $num = 50;
+        }
+        if ($this->lottery == ResultPC::BJPC28) {
+            $data = ResultPC::find()->orderBy(ResultPC::ID .' desc')->limit($num)->asArray()->all();
+            $res = CustomHelper::pc28NotOpenHandle($data);
+        } else {
+            echo '找不到相关彩种';
+            return ExitCode::UNSPECIFIED_ERROR;
+        }
+
         if (!($model = NotOpen::findOne(['lottery_id' => $this->lottery, 'issue_num' => $num]))) {
             $model = new NotOpen();
         }
-        $res = ['big' => '--', 'small' => '--', 'even' => '--', 'odd' => '--', 'small_even' => '--', 'small_odd' => '--', 'big_even' => '--', 'big_odd' => '--', 'small_limit' => '--', 'big_limit' => '--'];
-        for ($i=0; $i < 28; $i++) { 
-            $res['c'. $i] = '--';
+        $model->lottery_id = $this->lottery;
+        $model->issue_num = $num;
+        $model->data = json_encode($res);
+        if (!$model->save(false)) {
+            echo '操作失败';
+            return ExitCode::UNSPECIFIED_ERROR;
         }
-        if ($this->lottery == 1) {
-            $data = ResultPC::find()->orderBy(ResultPC::$idKey .' desc')->limit($num)->asArray()->all();
-            foreach ($data as $k => $v) {
-                if ($v['sum_big'] == '大' && (!isset($res['big']) || $res['big'] == '--')) {
-                    $res['big'] = ['num' => $k, 'is_color' => ($k > 6 ? 1 : 0)];
-                } elseif ($v['sum_big'] == '小' && (!isset($res['small']) || $res['small'] == '--')) {
-                    $res['small'] = ['num' => $k, 'is_color' => ($k > 6 ? 1 : 0)];
-                }
-
-                if ($v['sum_even'] == '单' && (!isset($res['even']) || $res['even'] == '--')) {
-                    $res['even'] = ['num' => $k, 'is_color' => ($k > 6 ? 1 : 0)];
-                } elseif ($v['sum_even'] == '双' && (!isset($res['odd']) || $res['odd'] == '--')) {
-                    $res['odd'] = ['num' => $k, 'is_color' => ($k > 6 ? 1 : 0)];
-                }
-
-                if ($v['sum_bigeven'] == '小单' && (!isset($res['small_even']) || $res['small_even'] == '--')) {
-                    $res['small_even'] = ['num' => $k, 'is_color' => ($k > 10 ? 1 : 0)];
-                } elseif ($v['sum_bigeven'] == '大单' && (!isset($res['big_even']) || $res['big_even'] == '--')) {
-                    $res['big_even'] = ['num' => $k, 'is_color' => ($k > 10 ? 1 : 0)];
-                } elseif ($v['sum_bigeven'] == '小双' && (!isset($res['small_odd']) || $res['small_odd'] == '--')) {
-                    $res['small_odd'] = ['num' => $k, 'is_color' => ($k > 10 ? 1 : 0)];
-                } elseif ($v['sum_bigeven'] == '大双' && (!isset($res['big_odd']) || $res['big_odd'] == '--')) {
-                    $res['big_odd'] = ['num' => $k, 'is_color' => ($k > 10 ? 1 : 0)];
-                }
-
-                if ($v['sum_limit'] == '极大' && (!isset($res['big_limit']) || $res['big_limit'] == '--')) {
-                    $res['big_limit'] = ['num' => $k, 'is_color' => ($k > 20 ? 1 : 0)];
-                } elseif ($v['sum_limit'] == '极小' && (!isset($res['small_limit']) || $res['small_limit'] == '--')) {
-                    $res['small_limit'] = ['num' => $k, 'is_color' => ($k > 20 ? 1 : 0)];
-                }
-
-                for ($i=0; $i < 28; $i++) { 
-                    if ($v['number_sum'] == $i && (!isset($res['c'. $i]) || $res['c'. $i] == '--')) {
-                        $res['c'. $i] = ['num' => $k, 'is_color' => CustomHelper::getWkLimit($i, $k)];
-                    }
-                }
-            }
-        }
+        echo '操作成功';
+        return ExitCode::OK;
     }
 }

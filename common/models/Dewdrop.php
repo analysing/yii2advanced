@@ -3,13 +3,13 @@
 namespace common\models;
 
 /**
-* 未开统计
-*/
-class NotOpen extends \yii\db\ActiveRecord
+ * 露珠走势
+ */
+class Dewdrop extends \yii\db\ActiveRecord
 {
     public static function tableName()
     {
-        return '{{%not_open}}';
+        return '{{%dewdrop}}';
     }
 
     public function beforeSave($insert)
@@ -19,9 +19,9 @@ class NotOpen extends \yii\db\ActiveRecord
         }
         $now = time();
         if ($insert) {
-            $this->created = $now;
+            if (isset($this->created)) $this->created = $now; // 更新创建时间
         }
-        $this->updated = $now;
+        if (isset($this->updated)) $this->updated = $now; // 更新修改时间
         return true;
     }
 }
