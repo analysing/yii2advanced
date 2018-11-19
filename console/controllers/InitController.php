@@ -1,6 +1,6 @@
 <?php
 
-namespace lotto28\console\controllers;
+namespace console\controllers;
 
 use Yii;
 use yii\console\ExitCode;
@@ -64,10 +64,10 @@ class InitController extends \yii\console\Controller
         $model->issue_num = $num;
         $model->data = json_encode($res);
         if (!$model->save(false)) {
-            echo '操作失败';
+            echo 'failure';
             return ExitCode::UNSPECIFIED_ERROR;
         }
-        echo '操作成功';
+        echo 'success';
         return ExitCode::OK;
     }
 }
