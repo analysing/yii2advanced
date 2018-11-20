@@ -53,6 +53,15 @@ return [
                         'GET load' => 'load',
                     ],
                 ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'cms',
+                    'pluralize' => false,
+                    'except' => ['delete', 'update', 'create', 'view'],
+                    'extraPatterns' => [
+                        'GET type' => 'type',
+                    ],
+                ],
             ],
         ],
         
