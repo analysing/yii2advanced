@@ -3,15 +3,15 @@
 namespace common\models;
 
 /**
- * 北京PC28
+ * 加拿大PC28
  */
-class ResultPC extends \yii\db\ActiveRecord
+class ResultJnd extends \yii\db\ActiveRecord
 {
     const IDNAME = 'nu_id';
-    const LOTTERYID = 1;
+    const LOTTERYID = 2;
 
     public static function tableName()
     {
-        return '{{%result_pc}}';
+        return '{{%result_jnd}}';
     }
 }

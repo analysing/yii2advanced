@@ -55,6 +55,14 @@ return [
                 ],
                 [
                     'class' => 'yii\rest\UrlRule',
+                    'controller' => 'jndpc28',
+                    'except' => ['delete', 'update', 'create', 'view'],
+                    'extraPatterns' => [
+                        'GET load' => 'load',
+                    ],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
                     'controller' => 'cms',
                     'pluralize' => false,
                     'except' => ['delete', 'update', 'create', 'view'],
