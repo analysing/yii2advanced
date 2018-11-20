@@ -33,8 +33,11 @@ class Bjpc28Controller extends \yii\rest\ActiveController
             // 开奖结果
             // $latest = $redis->zrevrange('res'. ResultPC::BJPC28, 0, 0);
             if (!($res = $redis->zrevrange('res'. ResultPC::BJPC28, 0, $num))) {
-                $res = ResultPC::find()->orderBy(ResultPC::ID .' desc')->limit($num)->asArray()->all();
+                $res = ResultPC::find()->orderBy(ResultPC::IDNAME .' desc')->limit($num)->asArray()->all();
                 $latest = current($res);
+                foreach ($res as $k => $v) {
+                    $redis->zadd('res'. ResultPC::BJPC28, $v[ResultPC::IDNAME], json_encode($v));
+                }
             } else {
                 foreach ($res as $k => &$v) {
                     $v['data'] = json_decode($v['data'], true);
@@ -43,7 +46,10 @@ class Bjpc28Controller extends \yii\rest\ActiveController
                 $latest = current($res);
             }
             $latest_key = 'latest'. ResultPC::BJPC28;
-            if (!$redis->exists($latest_key) || $redis->get($latest_key) != $latest[ResultPC::ID]) {
+            if (!$redis->exists($latest_key) || $redis->get($latest_key) != $latest[ResultPC::IDNAME]) {
+                // 加入新奖期开奖结果
+                $redis->zadd('res'. ResultPC::BJPC28, $latest[ResultPC::IDNAME], json_encode($latest));
+                $redis->zremrangebyrank('res'. ResultPC::BJPC28, 0, 0); // redis移除最早一期数据
                 // 加入新奖期未开统计
                 $not_open_data = NotOpen::findAll(['lottery_id' => ResultPC::BJPC28]);
                 foreach ($not_open_data as $k => $v) {
@@ -65,7 +71,7 @@ class Bjpc28Controller extends \yii\rest\ActiveController
                     $dewdrop_data->data = json_encode($dt_hdl);
                     $dewdrop_data->save(false);
                 } else {
-                    $data = ResultPC::find()->where(['between', 'add_time', strtotime($today), strtotime($today .' 23:59:59')])->orderBy(ResultPC::ID .' asc')->asArray()->all();
+                    $data = ResultPC::find()->where(['between', 'add_time', strtotime($today), strtotime($today .' 23:59:59')])->orderBy(ResultPC::IDNAME .' asc')->asArray()->all();
                     $dt = ['daxiao' => [], 'danshuang' => []];
                     foreach ($data as $k => $v) {
                         $dt['daxiao'][$k] = $v['sum_big'];
@@ -81,7 +87,7 @@ class Bjpc28Controller extends \yii\rest\ActiveController
                     $model->save(false);
                 }
                 // 设置redis key为最新奖期
-                $redis->set($latest_key, $latest[ResultPC::ID]);
+                $redis->set($latest_key, $latest[ResultPC::IDNAME]);
             }
             // 未开统计
             $not_open = NotOpen::findOne(['lottery_id' => ResultPC::BJPC28, 'issue_num' => $not_open_num]);
@@ -94,5 +100,13 @@ class Bjpc28Controller extends \yii\rest\ActiveController
             return ['errno' => 1, 'errstr' => '找不到相关彩种'];
         }*/
         return ['latest' => $latest, 'count_down' => $count_down, 'res' => $res, 'statistics', 'not_open' => $not_open, 'dewdrop' => $dewdrop, 'trend'];
+    }
+
+    public function actionLoad($issue_id = '', $limit = 15)
+    {
+        if (!$issue_id) return [];
+        if (!is_numeric($limit) || $limit <= 0 || $limit > 100) $limit = 15;
+        $data = ResultPC::find()->where(['<', ResultPC::IDNAME, $issue_id])->orderBy(ResultPC::IDNAME .' desc')->limit($limit)->asArray()->all();
+        return $data;
     }
 }

@@ -49,6 +49,9 @@ return [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'bjpc28',
                     'except' => ['delete', 'update', 'create', 'view'],
+                    'extraPatterns' => [
+                        'GET load' => 'load',
+                    ],
                 ],
             ],
         ],

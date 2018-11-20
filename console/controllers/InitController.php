@@ -33,14 +33,15 @@ class InitController extends \yii\console\Controller
         $redis = Yii::$app->redis;
         if ($this->lottery == ResultPC::BJPC28) {
             $redis->del('res'. ResultPC::BJPC28); // 删除原来的数据
-            $data = ResultPC::find()->orderBy(ResultPC::ID .' desc')->limit($num)->asArray()->all();
+            $data = ResultPC::find()->orderBy(ResultPC::IDNAME .' desc')->limit($num)->asArray()->all();
             foreach ($data as $k => $v) {
-                $redis->zadd('res'. ResultPC::BJPC28, $v[ResultPC::ID], json_encode($v));
+                $redis->zadd('res'. ResultPC::BJPC28, $v[ResultPC::IDNAME], json_encode($v));
             }
         } else {
             echo '找不到相关彩种';
             return ExitCode::UNSPECIFIED_ERROR;
         }
+        echo 'success';
         return ExitCode::OK;
     }
     
@@ -50,7 +51,7 @@ class InitController extends \yii\console\Controller
             $num = 50;
         }
         if ($this->lottery == ResultPC::BJPC28) {
-            $data = ResultPC::find()->orderBy(ResultPC::ID .' desc')->limit($num)->asArray()->all();
+            $data = ResultPC::find()->orderBy(ResultPC::IDNAME .' desc')->limit($num)->asArray()->all();
             $res = CustomHelper::pc28NotOpenHandle($data);
         } else {
             echo '找不到相关彩种';
