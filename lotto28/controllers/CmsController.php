@@ -57,7 +57,7 @@ class CmsController extends \yii\rest\ActiveController
         if (!is_numeric($type_id) || $type_id < 0) $type_id = 1;
         if (!is_numeric($limit) || $limit < 0 || $limit > 2000) $limit = 100;
 
-        $data = CmsContent::find()->select('id, cms_type_id, cms_title, addtime')->->orderBy(CmsContent::IDNAME .' desc')->limit($limit)->asArray()->all();
+        $data = CmsContent::find()->select('id, cms_type_id, cms_title, addtime')->where(['cms_type_id' => $type_id])->orderBy(CmsContent::IDNAME .' desc')->limit($limit)->asArray()->all();
         $type = CmsContent::CMSTYPE;
         $res = [];
         foreach ($data as $k => $v) {
@@ -71,6 +71,9 @@ class CmsController extends \yii\rest\ActiveController
     public function actionContent($id)
     {
         $res = CmsContent::findOne(['id' => $id]);
-        return $res;
+        if (!$res) {
+            return [];
+        }
+        return $res->cms_content;
     }
 }

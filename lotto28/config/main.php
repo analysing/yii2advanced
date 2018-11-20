@@ -60,6 +60,8 @@ return [
                     'except' => ['delete', 'update', 'create', 'view'],
                     'extraPatterns' => [
                         'GET type' => 'type',
+                        'GET more' => 'more',
+                        'GET content/<id>' => 'content',
                     ],
                 ],
             ],
