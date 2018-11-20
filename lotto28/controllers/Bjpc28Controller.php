@@ -25,11 +25,11 @@ class Bjpc28Controller extends \yii\rest\ActiveController
     public function actionIndex()
     {
         $request = Yii::$app->request;
-        $lottery_id = $request->get('lottery_id', 1);
+        // $lottery_id = $request->get('lottery_id', 1);
         $num = $request->get('num', 15);
         $not_open_num = $request->get('not_open_num', 50);
         $redis = Yii::$app->redis;
-        if ($lottery_id == ResultPC::BJPC28) {
+        // if ($lottery_id == ResultPC::BJPC28) {
             // 开奖结果
             // $latest = $redis->zrevrange('res'. ResultPC::BJPC28, 0, 0);
             if (!($res = $redis->zrevrange('res'. ResultPC::BJPC28, 0, $num))) {
@@ -85,15 +85,14 @@ class Bjpc28Controller extends \yii\rest\ActiveController
             }
             // 未开统计
             $not_open = NotOpen::findOne(['lottery_id' => ResultPC::BJPC28, 'issue_num' => $not_open_num]);
-            file_put_contents('d:/1.txt', var_export($not_open, 1));
             $not_open = $not_open ? json_decode($not_open->data, true) : [];
             // 露珠走势
             $dewdrop = Dewdrop::findOne(['lottery_id' => ResultPC::BJPC28, 'belong_date' => date('Y-m-d')]);
             $dewdrop = $dewdrop ? json_decode($dewdrop->data, true) : [];
-            $count_down = CustomHelper::getCountdown($lottery_id, $latest['add_time']);
-        } else {
+            $count_down = CustomHelper::getCountdown(ResultPC::BJPC28, $latest['add_time']);
+        /*} else {
             return ['errno' => 1, 'errstr' => '找不到相关彩种'];
-        }
-        return ['latest' => $latest, 'count_down' => $count_down, 'res' => $res, 'statistics', 'not_open' => $not_open_num, 'dewdrop' => $dewdrop, 'trend'];
+        }*/
+        return ['latest' => $latest, 'count_down' => $count_down, 'res' => $res, 'statistics', 'not_open' => $not_open, 'dewdrop' => $dewdrop, 'trend'];
     }
 }
