@@ -275,7 +275,7 @@ class CustomHelper
                     $st = strtotime(date("Y-m-d", strtotime("+1 day")) . ' 09:05:00') - time();
                 }
                 break;
-            case 'result_jnd':
+            case 2:
                 $st = 200 - $nt + $lt;
                 $st = $st > 200 ? 200 : $st;
                 $st = $st < 0 ? 0 : $st;

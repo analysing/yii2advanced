@@ -40,7 +40,7 @@ class Bjpc28Controller extends \yii\rest\ActiveController
                 }
             } else {
                 foreach ($res as $k => &$v) {
-                    $v['data'] = json_decode($v['data'], true);
+                    $v = json_decode($v, true);
                 }
                 reset($res); // 重置数组指针，有没有必要呢
                 $latest = current($res);
