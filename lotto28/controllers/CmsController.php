@@ -4,6 +4,7 @@ namespace lotto28\controllers;
 
 use Yii;
 use common\models\CmsContent;
+use common\components\ExitCode;
 
 /**
  * CMS
@@ -41,12 +42,12 @@ class CmsController extends \yii\rest\ActiveController
             $v['addtime'] = date('Y-m-d', $v['addtime']);
             $res[$v['cms_type_id']][] = $v;
         }
-        return $res;
+        return ExitCode::exitDataHdl(['data' => $res], ExitCode::OK);
     }
 
     public function actionType()
     {
-        return CmsContent::CMSTYPE;
+        return ExitCode::exitDataHdl(['data' => CmsContent::CMSTYPE], ExitCode::OK);
     }
 
     public function actionMore()
@@ -65,15 +66,15 @@ class CmsController extends \yii\rest\ActiveController
             $res[$k]['cms_type'] = $type[$v['cms_type_id']];
             $res[$k]['addtime'] = date('Y-m-d', $v['addtime']);
         }
-        return $res;
+        return ExitCode::exitDataHdl(['data' => $res], ExitCode::OK);
     }
 
     public function actionContent($id)
     {
         $res = CmsContent::findOne(['id' => $id]);
         if (!$res) {
-            return [];
+            return ExitCode::exitDataHdl([], ExitCode::DB_NO_DATA);
         }
-        return $res->cms_content;
+        return ExitCode::exitDataHdl($res->cms_content, ExitCode::OK);
     }
 }
