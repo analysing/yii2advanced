@@ -2,12 +2,12 @@
 
 namespace backend\assets;
 
-use yii\web\AssetBundle;
+// use yii\web\AssetBundle;
 
 /**
  * Main backend application asset bundle.
  */
-class AppAsset extends AssetBundle
+class AppAsset extends \yiister\gentelella\assets\Asset
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';

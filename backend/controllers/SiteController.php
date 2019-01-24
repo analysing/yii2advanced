@@ -49,6 +49,7 @@ class SiteController extends Controller
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
+                'view' => '@yiister/gentelella/views/error',
             ],
         ];
     }
@@ -93,6 +94,7 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
+        file_put_contents('d:/1.txt', 'actionLogout');
         Yii::$app->user->logout();
 
         return $this->goHome();
