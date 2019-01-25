@@ -5,10 +5,11 @@
  * @var \yii\web\View $this
  */
 
+use backend\assets\AppAsset;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$bundle = yiister\gentelella\assets\Asset::register($this);
+$bundle = AppAsset::register($this);
 
 ?>
 <?php $this->beginPage(); ?>
@@ -49,7 +50,7 @@ $bundle = yiister\gentelella\assets\Asset::register($this);
                     </div>
                     <div class="profile_info">
                         <span>Welcome,</span>
-                        <h2>John Doe</h2>
+                        <h2><?=Yii::$app->user->identity->username; ?></h2>
                     </div>
                 </div>
                 <!-- /menu prile quick info -->
@@ -66,7 +67,7 @@ $bundle = yiister\gentelella\assets\Asset::register($this);
                             [
                                 "items" => [
                                     ["label" => "Home", "url" => Url::base(), "icon" => "home"],
-                                    ["label" => "Layout", "url" => ["site/layout"], "icon" => "files-o"],
+                                    ["label" => "Layout", "url" => Url::to(['site/index']), "icon" => "files-o"],
                                     ["label" => "Error page", "url" => ["site/error-page"], "icon" => "close"],
                                     [
                                         "label" => "Widgets",
@@ -166,7 +167,7 @@ $bundle = yiister\gentelella\assets\Asset::register($this);
                     <ul class="nav navbar-nav navbar-right">
                         <li class="">
                             <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                <img src="http://placehold.it/128x128" alt="">John Doe
+                                <img src="http://placehold.it/128x128" alt=""><?=Yii::$app->user->identity->username; ?>
                                 <span class=" fa fa-angle-down"></span>
                             </a>
                             <ul class="dropdown-menu dropdown-usermenu pull-right">
@@ -181,14 +182,7 @@ $bundle = yiister\gentelella\assets\Asset::register($this);
                                 <li>
                                     <a href="javascript:;">Help</a>
                                 </li>
-                                <li><i class="fa fa-sign-out pull-right"></i>
-                                    <?=Html::beginForm(['/site/logout'], 'post')
-                                        . Html::submitButton(
-                                            'Logout (' . Yii::$app->user->identity->username . ')',
-                                            ['class' => 'btn btn-link logout']
-                                        )
-                                        . Html::endForm(); ?>
-                                    <!-- <a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a> -->
+                                <li><a href="javascript:logout('<?=Url::to(['site/logout']); ?>');"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
                                 </li>
                             </ul>
                         </li>

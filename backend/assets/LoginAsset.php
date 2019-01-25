@@ -2,25 +2,25 @@
 
 namespace backend\assets;
 
-// use yii\web\AssetBundle;
+use yii\web\AssetBundle;
 
 /**
  * Main backend application asset bundle.
  */
-class AppAsset extends \yiister\gentelella\assets\Asset
+class LoginAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'css/site.css',
+        'css/ie10-viewport-bug-workaround.css',
+        'css/signin.css',
     ];
     public $js = [
-        'js/index.js',
+        'js/ie10-viewport-bug-workaround.js',
+        'js/ie-emulation-modes-warning.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
-        'yiister\gentelella\assets\ThemeAsset',
-        'yiister\gentelella\assets\ExtensionAsset',
     ];
 }

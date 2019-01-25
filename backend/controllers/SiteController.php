@@ -12,6 +12,7 @@ use common\models\LoginForm;
  */
 class SiteController extends Controller
 {
+    // public $layout = false;
     /**
      * {@inheritdoc}
      */
@@ -71,6 +72,7 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        $this->layout = false;
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -94,7 +96,6 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        file_put_contents('d:/1.txt', 'actionLogout');
         Yii::$app->user->logout();
 
         return $this->goHome();
